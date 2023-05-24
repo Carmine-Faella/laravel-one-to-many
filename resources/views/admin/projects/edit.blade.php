@@ -38,10 +38,17 @@
         </div>
 
         <div class="mb-3">
-            <label for="slug" class="form-label">Slug:</label>
-            <input type="slug" class="form-control @error('slug') is-invalid @enderror" id="slug" name="slug" value="{{ old('slug', $project->slug) }}">
-            @error('slug')
-                <div class="alert alert-danger">{{ $message }}</div>
+            <label for="type_id" class="form-label">Seleziona type</label>
+            <select class="form-select @error('type_id') is-invalid @enderror" name="type_id" id="type_id">
+                <option>Nessun type</option>
+                @foreach ($types as $type)
+                    <option @selected(old('type_id', $type->type_id)==$type->id) value="{{$type->id}}">{{$type->name}}</option>
+                @endforeach
+            </select>
+            @error('type_id')
+                <div class="invalid-feedback">
+                    {{$message}}
+                </div>
             @enderror
         </div>
 

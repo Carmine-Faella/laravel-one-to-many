@@ -42,14 +42,14 @@ class ProjectController extends Controller
     {
         $form_data = $request->all();
         $form_data = $this->validation($request->all());
-
         $form_data['slug'] = Project::generateSlug($request->title);
-        $newProject = Project::create($form_data);
-
+        
         $checkPost = Project::where('slug', $form_data['slug'])->first();
         if ($checkPost) {
             return back()->withInput()->withErrors(['slug' => 'Impossibile creare lo slug per questo post, cambia il titolo']);
-        }
+        };
+
+        $newProject = Project::create($form_data);
 
         return redirect()->route('admin.projects.show', ['project' => $newProject->slug])->with('status', 'Project aggiunto con successo');;
     }
@@ -121,7 +121,7 @@ class ProjectController extends Controller
                 'title'=>'required|max:150',
                 'content'=>'nullable|max:1000',
                 'cover_image'=>'required|url|max:255',
-                'slug'=>'required',
+                'slug'=>'nullable',
             ],
             [
                 'title.required' => "Titolo richiesto",
@@ -130,7 +130,6 @@ class ProjectController extends Controller
                 'cover_image.required' => "L'url dell'immagine è richiesta",
                 'cover_image.url' => "Deve essere un url valida (ex. https://.....)",
                 'cover_image.max' => "Deve aver massimo 255 caratteri di lunghezza",
-                'slug.required' => "Slug richiesto",
             ]
         )->validate();
 

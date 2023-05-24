@@ -13,6 +13,7 @@
             <div class="card-body">
               <h5 class="card-title">{{$project->title}}</h5>
               <p class="card-text">{{$project->content}}</p>
+              <p class="card-text">{{$project->type->name}}</p>
               <p class="card-text"><small class="text-body-secondary">{{$project->slug}}</small></p>
               <a href="{{route('admin.projects.index')}}" class="btn btn-secondary">Torna alla lista</a>
             </div>
