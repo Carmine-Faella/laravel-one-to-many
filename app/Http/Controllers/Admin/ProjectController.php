@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Type;
 use App\Models\Project;
+use App\Http\Requests\StoreProjectRequest;
+use App\Http\Requests\UpdateProjectRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -38,10 +40,9 @@ class ProjectController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreProjectRequest $request)
     {
-        $form_data = $request->all();
-        $form_data = $this->validation($request->all());
+        $form_data = $request->validated();
         $form_data['slug'] = Project::generateSlug($request->title);
         
         $checkPost = Project::where('slug', $form_data['slug'])->first();
@@ -84,10 +85,9 @@ class ProjectController extends Controller
      * @param  \App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Project $project)
+    public function update(UpdateProjectRequest $request, Project $project)
     {
-        $form_data = $request->all();
-        $form_data = $this->validation($request->all());
+        $form_data = $request->validated();
         $form_data['slug'] = Project::generateSlug($request->title);
 
         $checkPost = Project::where('slug', $form_data['slug'])->where('id','<>',$project->id)->first();
@@ -113,27 +113,4 @@ class ProjectController extends Controller
         return redirect()->route('admin.projects.index', ['project' => $project->slug]);
     }
 
-    private function validation($data) {
-
-        $validator = Validator::make(
-            $data,
-            [
-                'title'=>'required|max:150',
-                'content'=>'nullable|max:1000',
-                'cover_image'=>'required|url|max:255',
-                'slug'=>'nullable',
-            ],
-            [
-                'title.required' => "Titolo richiesto",
-                'title.max' => "Deve aver massimo 50 caratteri di lunghezza",
-                'content.max' => "Deve aver massimo 255 caratteri di lunghezza",
-                'cover_image.required' => "L'url dell'immagine è richiesta",
-                'cover_image.url' => "Deve essere un url valida (ex. https://.....)",
-                'cover_image.max' => "Deve aver massimo 255 caratteri di lunghezza",
-            ]
-        )->validate();
-
-        return $validator;
-
-    }
 }

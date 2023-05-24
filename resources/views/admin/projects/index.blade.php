@@ -7,6 +7,7 @@
       <tr>
         <th scope="col">#</th>
         <th scope="col">Titolo</th>
+        <th scope="col">Tipo</th>
         <th scope="col">Azioni</th>
       </tr>
     </thead>
@@ -15,6 +16,7 @@
           <tr>
             <td>{{ $project->id }}</td>
             <td>{{ $project->title }}</td>
+            <td>{{$project->type?->name}}</td> 
             <td class="d-flex">
               <div>
                 <a class="btn btn-primary" href="{{route('admin.projects.show', $project->slug)}}">VEDI</a>
