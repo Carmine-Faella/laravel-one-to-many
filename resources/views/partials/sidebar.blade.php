@@ -20,6 +20,16 @@
           Types
         </a>
       </li>
+      <li class="nav-item">
+        <a href="{{route('admin.projects.create')}}" class="nav-link @if (Route::currentRouteName() == 'admin.projects.create') active @endif">
+          New Project
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{{route('admin.types.create')}}" class="nav-link @if (Route::currentRouteName() == 'admin.types.create') active @endif">
+          New Type
+        </a>
+      </li>
     </ul>
   </div>
     <hr>

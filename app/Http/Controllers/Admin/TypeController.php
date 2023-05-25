@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Type;
+use App\Models\Project;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreTypeRequest;
+use App\Http\Requests\UpdateTypeRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
@@ -27,7 +30,8 @@ class TypeController extends Controller
      */
     public function create()
     {
-        //
+        $types = Type::all();
+        return view('admin.types.create', compact('types'));
     }
 
     /**
@@ -36,9 +40,19 @@ class TypeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreTypeRequest $request)
     {
-        //
+        $form_data = $request->validated();
+        $form_data['slug'] = Type::generateSlug($request->name);
+        
+        $checkPost = Type::where('slug', $form_data['slug'])->first();
+        if ($checkPost) {
+            return back()->withInput()->withErrors(['slug' => 'Impossibile creare lo slug per questo post, cambia il titolo']);
+        };
+
+        $newType = Type::create($form_data);
+
+        return redirect()->route('admin.types.show', ['type' => $newType->slug])->with('status', 'Project aggiunto con successo');;
     }
 
     /**
@@ -49,7 +63,7 @@ class TypeController extends Controller
      */
     public function show(Type $type)
     {
-        //
+        return view('admin.types.show', compact('type'));
     }
 
     /**
@@ -60,7 +74,8 @@ class TypeController extends Controller
      */
     public function edit(Type $type)
     {
-        //
+        $types = Type::all();
+        return view('admin.types.edit', compact('type'));
     }
 
     /**
@@ -70,9 +85,19 @@ class TypeController extends Controller
      * @param  \App\Models\Type  $type
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Type $type)
+    public function update(UpdateTypeRequest $request, Type $type)
     {
-        //
+        $form_data = $request->validated();
+        $form_data['slug'] = Type::generateSlug($request->name);
+
+        $checkPost = Type::where('slug', $form_data['slug'])->where('id','<>',$type->id)->first();
+        if ($checkPost) {
+            return back()->withInput()->withErrors(['slug' => 'Impossibile creare lo slug per questo post, cambia il titolo']);
+        }
+        
+        $type->update($form_data);
+
+        return redirect()->route('admin.types.show', ['type' => $type->slug])->with('status', 'Project Aggiornato!');
     }
 
     /**
@@ -83,6 +108,8 @@ class TypeController extends Controller
      */
     public function destroy(Type $type)
     {
-        //
+        $project->delete();
+
+        return redirect()->route('admin.types.index', ['type' => $type->slug]);
     }
 }

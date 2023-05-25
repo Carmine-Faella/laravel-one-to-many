@@ -1,7 +1,6 @@
 @extends('layouts.admin')
 
 @section('content')
-<a href="{{route('admin.projects.create')}}" class="btn btn-primary">Crea una nuova card</a>
 <table class="table">
     <thead>
       <tr>
